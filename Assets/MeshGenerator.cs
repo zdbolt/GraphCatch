@@ -6,13 +6,16 @@ public class MeshGenerator : MonoBehaviour {
     // Use this for initialization
     [SerializeField]
     MeshFilter filter;
-    public float size =1;
+    [SerializeField]
+    MeshCollider meshCollider;
+    public float meshScaler =0.5f;
 	void Start () {
         filter.mesh = GenerateMesh();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 
@@ -21,17 +24,23 @@ public class MeshGenerator : MonoBehaviour {
 
         Mesh mesh = new Mesh();
         List<Vector3> vectorList = new List<Vector3>();
-        for (int x = -5; x <= 5; x++)
-            for (int y = -5; y <= 5; y++)
-            {
-                vectorList.Add(new Vector3(x, y, (x * x + y * y)));
-            }
-
-        mesh.SetVertices(vectorList);
-
+        List<Vector3> normalsList = new List<Vector3>();
         List<int> trianglesList = new List<int>();
         int columnSize = 11;
-        for (int i = 0; i < 100; i++)
+        int i = 0;
+
+        //adding vertex and shaders for top of curve(which ends up being the bottom for the player)
+                for (float x = meshScaler * -5; x <= meshScaler * 5; x = x + meshScaler)
+                    for (float y = meshScaler * -5; y <= meshScaler * 5; y = y + meshScaler)
+                    {
+
+                        vectorList.Add(new Vector3(x, 0.25f*(x * x + y * y), y));
+                        normalsList.Add(Vector3.Cross(new Vector3(0.0f, (y * 2), 1.0f), new Vector3(1.0f, (x * 2), 0.0f )));
+                    }
+
+        for (int x = -5; x < 5; x++)
+        {
+            for (int y = -5; y < 5; y++)
             {
                 trianglesList.Add(i);
                 trianglesList.Add(i + 1 + columnSize);
@@ -40,18 +49,58 @@ public class MeshGenerator : MonoBehaviour {
                 trianglesList.Add(i);
                 trianglesList.Add(i + 1);
                 trianglesList.Add(i + 1 + columnSize);
+
+                //trianglesList.Add(i + 1 + columnSize);
+                //trianglesList.Add(i);
+                //trianglesList.Add(i + columnSize);
+
+                //trianglesList.Add(i + 1);
+                //trianglesList.Add(i);
+                //trianglesList.Add(i + 1 + columnSize);
+
+                i++;
+            }
+            i++; //skip the top x value that won't have it's triangle drawn
+        }
+        i = i + columnSize;
+        for (float x = meshScaler * -5; x <= meshScaler * 5; x = x + meshScaler)
+            //adding vertex and shaders for bottom of curve (which ends up being the top for the player)
+            for (float y = meshScaler * -5; y <= meshScaler * 5; y = y + meshScaler)
+            {
+
+                vectorList.Add(new Vector3(x, 0.25f*(x * x + y * y), y));
+                normalsList.Add(Vector3.Cross(new Vector3(1.0f, (x * 2), 0.0f), new Vector3(0.0f, (y * 2), 1.0f)));
             }
 
-        mesh.SetTriangles(trianglesList, 0);
-
-        List<Vector3> normalsList = new List<Vector3>();
-
-        for (int i = 0; i < 100; i++)
+        for (int x = -5; x < 5; x++)
         {
-            normalsList.Add(Vector3.up);
+            for (int y = -5; y < 5; y++)
+            {
+                //trianglesList.Add(i);
+                //trianglesList.Add(i + 1 + columnSize);
+                //trianglesList.Add(i + columnSize);
+
+                //trianglesList.Add(i);
+                //trianglesList.Add(i + 1);
+                //trianglesList.Add(i + 1 + columnSize);
+
+                trianglesList.Add(i + 1 + columnSize);
+                trianglesList.Add(i);
+                trianglesList.Add(i + columnSize);
+
+                trianglesList.Add(i + 1);
+                trianglesList.Add(i);
+                trianglesList.Add(i + 1 + columnSize);
+
+                i++;
+            }
+            i++; //skip the top x value that won't have it's triangle drawn
         }
 
-         mesh.SetNormals(normalsList);
+        mesh.SetVertices(vectorList);
+        mesh.SetNormals(normalsList);
+        mesh.SetTriangles(trianglesList, 0);
+        meshCollider.sharedMesh = mesh;
 
             return mesh;
     }
