@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MeshGenerator : MonoBehaviour {
     // Use this for initialization
@@ -8,8 +9,16 @@ public class MeshGenerator : MonoBehaviour {
     MeshFilter filter;
     [SerializeField]
     MeshCollider meshCollider;
-    public float meshScaler =0.5f;
-	void Start () {
+    [SerializeField]
+    Slider aSlider;
+    [SerializeField]
+    Slider bSlider;
+    [SerializeField]
+    Slider cSlider;
+    [SerializeField]
+    Slider dSlider;
+    public float meshScaler =1f;
+    void Start () {
         filter.mesh = GenerateMesh();
     }
 
@@ -19,6 +28,11 @@ public class MeshGenerator : MonoBehaviour {
 		
 	}
 
+    public void updateMesh()
+    {
+        filter.mesh = GenerateMesh();
+    }
+    // Calculates the equation z = ((1/d)(x-a)^2 + (y-b)^2 + c))
     Mesh GenerateMesh()
     {
 
@@ -28,14 +42,14 @@ public class MeshGenerator : MonoBehaviour {
         List<int> trianglesList = new List<int>();
         int columnSize = 11;
         int i = 0;
-
         //adding vertex and shaders for top of curve(which ends up being the bottom for the player)
                 for (float x = meshScaler * -5; x <= meshScaler * 5; x = x + meshScaler)
                     for (float y = meshScaler * -5; y <= meshScaler * 5; y = y + meshScaler)
                     {
 
-                        vectorList.Add(new Vector3(x, 0.25f*(x * x + y * y), y));
-                        normalsList.Add(Vector3.Cross(new Vector3(0.0f, (y * 2), 1.0f), new Vector3(1.0f, (x * 2), 0.0f )));
+                    float z = (x * x + y * y);
+                vectorList.Add(new Vector3(x + aSlider.value, (1/dSlider.value)* (z + cSlider.value), y + bSlider.value));
+                normalsList.Add(Vector3.Cross(new Vector3(0.0f, (y * 2), 1.0f), new Vector3(1.0f, (x * 2), 0.0f )));
                     }
 
         for (int x = -5; x < 5; x++)
@@ -64,13 +78,15 @@ public class MeshGenerator : MonoBehaviour {
         }
         i = i + columnSize;
         for (float x = meshScaler * -5; x <= meshScaler * 5; x = x + meshScaler)
-            //adding vertex and shaders for bottom of curve (which ends up being the top for the player)
             for (float y = meshScaler * -5; y <= meshScaler * 5; y = y + meshScaler)
-            {
-
-                vectorList.Add(new Vector3(x, 0.25f*(x * x + y * y), y));
+            
+                //adding vertex and shaders for bottom of curve (which ends up being the top for the player)
+                {
+                    float z = (x * x + y * y);
+                vectorList.Add(new Vector3(x + aSlider.value, (1 / dSlider.value) * (z + cSlider.value), y + bSlider.value));
                 normalsList.Add(Vector3.Cross(new Vector3(1.0f, (x * 2), 0.0f), new Vector3(0.0f, (y * 2), 1.0f)));
-            }
+                }
+            
 
         for (int x = -5; x < 5; x++)
         {
