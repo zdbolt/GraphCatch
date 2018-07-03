@@ -48,7 +48,7 @@ public class MeshGenerator : MonoBehaviour {
                     {
 
                     float z = (x * x + y * y);
-                vectorList.Add(new Vector3(x + aSlider.value, (1/dSlider.value)* (z + cSlider.value), y + bSlider.value));
+                vectorList.Add(new Vector3(x + aSlider.value, (1 / dSlider.value) * (z + cSlider.value), y + bSlider.value));
                 normalsList.Add(Vector3.Cross(new Vector3(0.0f, (y * 2), 1.0f), new Vector3(1.0f, (x * 2), 0.0f )));
                     }
 
