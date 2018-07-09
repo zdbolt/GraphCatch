@@ -158,10 +158,10 @@ MonoBehaviour:
   timerDisplay: {fileID: 1722659859}
   equationDisplay: {fileID: 645090387}
   sliders:
+  - {fileID: 1953916830}
   - {fileID: 98714043}
   - {fileID: 565744981}
   - {fileID: 855485439}
-  - {fileID: 1953916830}
 --- !u!1 &98714041
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 98714042}
   - component: {fileID: 98714043}
   m_Layer: 5
-  m_Name: A Slider
+  m_Name: B Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -192,7 +192,7 @@ RectTransform:
   - {fileID: 321129101}
   - {fileID: 1318452841}
   m_Father: {fileID: 1983629972}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1204,7 +1204,7 @@ GameObject:
   - component: {fileID: 565744982}
   - component: {fileID: 565744981}
   m_Layer: 5
-  m_Name: B Slider
+  m_Name: C Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1294,7 +1294,7 @@ RectTransform:
   - {fileID: 1521147928}
   - {fileID: 1790628652}
   m_Father: {fileID: 1983629972}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1357,7 +1357,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -1453,7 +1453,7 @@ GameObject:
   - component: {fileID: 855485438}
   - component: {fileID: 855485439}
   m_Layer: 5
-  m_Name: C Slider
+  m_Name: D Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1473,7 +1473,7 @@ RectTransform:
   - {fileID: 311443920}
   - {fileID: 300012018}
   m_Father: {fileID: 1983629972}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2234,7 +2234,7 @@ GameObject:
   - component: {fileID: 1953916831}
   - component: {fileID: 1953916830}
   m_Layer: 5
-  m_Name: D Slider
+  m_Name: A Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2324,7 +2324,7 @@ RectTransform:
   - {fileID: 1343918528}
   - {fileID: 161369750}
   m_Father: {fileID: 1983629972}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2417,10 +2417,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 873801048}
+  - {fileID: 1953916831}
   - {fileID: 98714042}
   - {fileID: 565744982}
   - {fileID: 855485438}
-  - {fileID: 1953916831}
   - {fileID: 1722659858}
   - {fileID: 645090386}
   m_Father: {fileID: 0}

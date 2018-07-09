@@ -14,6 +14,7 @@ public class LevelManager : MonoBehaviour {
     Slider[] sliders;
     GameObject[] SphereList;
     Vector3[] SphereLocations;
+    Vector3[] SliderLocations;
     int numberSpheres;
     bool timerOn;
     int currentLevel;
@@ -71,8 +72,8 @@ public class LevelManager : MonoBehaviour {
                case 1:
                 {
                     numberSpheres = 4;
-                    SphereLocations = new Vector3[4];
-                    SphereList = new GameObject[4];
+                    SphereLocations = new Vector3[numberSpheres];
+                    SphereList = new GameObject[numberSpheres];
                     SphereLocations[0] = new Vector3(1, 10, 3);
                     SphereLocations[1] = new Vector3(2, 10, 4);
                     SphereLocations[2] = new Vector3(3, 10, 5);
@@ -84,6 +85,15 @@ public class LevelManager : MonoBehaviour {
                     currentLevel = 1;
                     levelTimeLimit = 3;
                     equationLength = 4;
+                    SliderLocations = new Vector3[equationLength];
+                    SliderLocations[0] = new Vector3(-176, 130, 0);
+                    SliderLocations[1] = new Vector3(-19, 106, 0);
+                    SliderLocations[2] = new Vector3(111, 130, 0);
+                    SliderLocations[3] = new Vector3(219, 106, 0);
+                    for (int i = 0; i<equationLength; i++)
+                    {
+                        sliders[i].transform.localPosition = SliderLocations[i];
+                    }
                     equation = new string[equationLength];
                     equation[0] = "Z=((1/";
                     equation[1] = ")*(X-";
@@ -105,7 +115,7 @@ public class LevelManager : MonoBehaviour {
                     {
                         SphereList[sphere] = Instantiate(SphereInstance, SphereLocations[sphere], Quaternion.identity);
                     }
-                    currentLevel = 1;
+                    currentLevel = 2;
                     levelTimeLimit = 3;
                 }
                 break;
