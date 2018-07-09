@@ -95,11 +95,13 @@ public class LevelManager : MonoBehaviour {
                         sliders[i].transform.localPosition = SliderLocations[i];
                     }
                     equation = new string[equationLength];
-                    equation[0] = "Z=((1/";
-                    equation[1] = ")*(X-";
+                    equation[0] = "Z=(1/";
+                    equation[1] = ")*((X-";
                     equation[2] = ")²+(Y-";
                     equation[3] = ")²)+";
                     UpdateEquation();
+                    timer = levelTimeLimit;
+                    timerDisplay.text = "Level Time: " + timer.ToString();
                 }
                 break;
                 case 2:
@@ -131,8 +133,6 @@ public class LevelManager : MonoBehaviour {
             SphereList[i].GetComponent<Rigidbody>().useGravity = true;
             SphereList[i].GetComponent<Rigidbody>().isKinematic = false;
             timerOn = true;
-            timer = levelTimeLimit;
-            timerDisplay.text = "Level Time: " + timer.ToString();
         }
     }
 
