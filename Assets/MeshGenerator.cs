@@ -40,21 +40,21 @@ public class MeshGenerator : MonoBehaviour {
         List<Vector3> vectorList = new List<Vector3>();
         List<Vector3> normalsList = new List<Vector3>();
         List<int> trianglesList = new List<int>();
-        int columnSize = 11;
+        int columnSize = 9;
         int i = 0;
         //adding vertex and shaders for top of curve(which ends up being the bottom for the player)
-                for (float x = meshScaler * -5; x <= meshScaler * 5; x = x + meshScaler)
-                    for (float y = meshScaler * -5; y <= meshScaler * 5; y = y + meshScaler)
+                for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler)
+                    for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler)
                     {
 
                     float z = (x * x + y * y);
-                vectorList.Add(new Vector3(x + aSlider.value, (1 / dSlider.value) * (z + cSlider.value), y + bSlider.value));
+                vectorList.Add(new Vector3(x + aSlider.value, (1 / dSlider.value) * z + cSlider.value, y + bSlider.value));
                 normalsList.Add(Vector3.Cross(new Vector3(0.0f, (y * 2), 1.0f), new Vector3(1.0f, (x * 2), 0.0f )));
                     }
 
-        for (int x = -5; x < 5; x++)
+        for (int x = -4; x < 4; x++)
         {
-            for (int y = -5; y < 5; y++)
+            for (int y = -4; y < 4; y++)
             {
                 trianglesList.Add(i);
                 trianglesList.Add(i + 1 + columnSize);
@@ -77,20 +77,20 @@ public class MeshGenerator : MonoBehaviour {
             i++; //skip the top x value that won't have it's triangle drawn
         }
         i = i + columnSize;
-        for (float x = meshScaler * -5; x <= meshScaler * 5; x = x + meshScaler)
-            for (float y = meshScaler * -5; y <= meshScaler * 5; y = y + meshScaler)
+        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler)
+            for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler)
             
                 //adding vertex and shaders for bottom of curve (which ends up being the top for the player)
                 {
                     float z = (x * x + y * y);
-                vectorList.Add(new Vector3(x + aSlider.value, (1 / dSlider.value) * (z + cSlider.value), y + bSlider.value));
+                vectorList.Add(new Vector3(x + aSlider.value, (1 / dSlider.value) * z + cSlider.value, y + bSlider.value));
                 normalsList.Add(Vector3.Cross(new Vector3(1.0f, (x * 2), 0.0f), new Vector3(0.0f, (y * 2), 1.0f)));
                 }
             
 
-        for (int x = -5; x < 5; x++)
+        for (int x = -4; x < 4; x++)
         {
-            for (int y = -5; y < 5; y++)
+            for (int y = -4; y < 4; y++)
             {
                 //trianglesList.Add(i);
                 //trianglesList.Add(i + 1 + columnSize);
