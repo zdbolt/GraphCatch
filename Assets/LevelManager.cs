@@ -8,13 +8,8 @@ public class LevelManager : MonoBehaviour {
     MeshFilter filter;
     [SerializeField]
     MeshCollider meshCollider;
-
     [SerializeField]
     Slider qualitySlider;
-    float qualityOfMesh; //smaller is better, increases or decreases the number of mesh points by powers of 2
-    public float meshScaler = 1f;
-
-
     [SerializeField]
     GameObject SphereInstance;
     [SerializeField]
@@ -26,6 +21,8 @@ public class LevelManager : MonoBehaviour {
     GameObject[] SphereList;
     Vector3[] SphereLocations;
     Vector3[] SliderLocations;
+    float qualityOfMesh; //smaller is better, increases or decreases the number of mesh points by powers of 2
+    public float meshScaler = 1f;
     int numberSpheres;
     bool timerOn;
     int currentLevel;
@@ -36,9 +33,9 @@ public class LevelManager : MonoBehaviour {
     float[][] sliderMaps;
     // Use this for initialization
     void Start () {
-        updateMesh();
         LoadLevel(1);
-	}
+        updateMesh();
+    }
 
     public void updateMesh()
     {
@@ -107,7 +104,7 @@ public class LevelManager : MonoBehaviour {
                     SliderLocations = new Vector3[equationLength];
                     sliderMaps = new float[equationLength][];
                     SliderLocations[0] = new Vector3(-176, 130, 0);
-                    sliderMaps[0] = new float[10] { -5, -4, -3, -2, -1, 1, 2, 3, 4, 5 };
+                    sliderMaps[0] = new float[10] { -1, -1/2f, -1/3f, -1/4f, -1/5f, 1/5f, 1/4f, 1/3f, 1/2f, 1 };
                     SliderLocations[1] = new Vector3(-19, 106, 0);
                     SliderLocations[2] = new Vector3(111, 130, 0);
                     SliderLocations[3] = new Vector3(219, 106, 0);
@@ -116,8 +113,8 @@ public class LevelManager : MonoBehaviour {
                         sliders[i].transform.localPosition = SliderLocations[i];
                     }
                     equation = new string[equationLength];
-                    equation[0] = "Z=(1/";
-                    equation[1] = ")*((X-";
+                    equation[0] = "Z=";
+                    equation[1] = "*((X-";
                     equation[2] = ")²+(Y-";
                     equation[3] = ")²)+";
                     UpdateEquation();
@@ -177,14 +174,18 @@ public class LevelManager : MonoBehaviour {
         equationDisplay.text = "";
         for (int i = 0; i<equationLength; i++)
         {
+            float value;
             if (sliderMaps[i] != null)
             {
-                equationDisplay.text = equationDisplay.text + equation[i] + sliderMaps[i][(int)sliders[i].value].ToString();
+                value = sliderMaps[i][(int)sliders[i].value];
+                                
             }
             else
             {
-                equationDisplay.text = equationDisplay.text + equation[i] + sliders[i].value.ToString();
+                value = sliders[i].value;
             }
+            value = Mathf.Round(value * 100f) / 100f;
+            equationDisplay.text = equationDisplay.text + equation[i] + value.ToString();
         }
     }
 
@@ -231,9 +232,9 @@ public class LevelManager : MonoBehaviour {
                     xUnityLocation = x + sliders[1].value;
 
                 if (sliderMaps != null && sliderMaps[0] != null)  //first calculates the 1/a value at the start of the whole equation
-                    yUnityLocation = (1 / sliderMaps[0][(int)sliders[0].value]) * z;
+                    yUnityLocation = sliderMaps[0][(int)sliders[0].value] * z;
                 else
-                    yUnityLocation = (1 / sliders[0].value) * z;
+                    yUnityLocation = sliders[0].value * z;
 
                 if (sliderMaps != null && sliderMaps[3] != null) //then adds d to it to incorporate the last of the equation
                     yUnityLocation = yUnityLocation + sliderMaps[3][(int)sliders[3].value];
@@ -295,9 +296,9 @@ public class LevelManager : MonoBehaviour {
                     xUnityLocation = x + sliders[1].value;
 
                 if (sliderMaps != null && sliderMaps[0] != null)  //first calculates the 1/a value at the start of the whole equation
-                    yUnityLocation = (1 / sliderMaps[0][(int)sliders[0].value]) * z;
+                    yUnityLocation = sliderMaps[0][(int)sliders[0].value] * z;
                 else
-                    yUnityLocation = (1 / sliders[0].value) * z;
+                    yUnityLocation = sliders[0].value * z;
 
                 if (sliderMaps != null && sliderMaps[3] != null) //then adds d to it to incorporate the last of the equation
                     yUnityLocation = yUnityLocation + sliderMaps[3][(int)sliders[3].value];
