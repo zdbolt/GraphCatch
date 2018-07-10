@@ -43,16 +43,21 @@ public class MeshGenerator : MonoBehaviour {
         List<Vector3> vectorList = new List<Vector3>();
         List<Vector3> normalsList = new List<Vector3>();
         List<int> trianglesList = new List<int>();
-        int columnSize = (int)(8/qualityOfMesh)+1;
+        int columnSize = (int)(8 / qualityOfMesh) + 1;
         int i = 0;
         //adding vertex and shaders for top of curve(which ends up being the bottom for the player)
-                for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler* qualityOfMesh)
-                    for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler* qualityOfMesh)
-                    {
-                    float z = (x * x + y * y);
-                    vectorList.Add(new Vector3(x + bSlider.value, (1 / aSlider.value) * z + dSlider.value, y + cSlider.value));
-                    normalsList.Add(Vector3.Cross(new Vector3(0.0f, (y * 2), 1.0f), new Vector3(1.0f, (x * 2), 0.0f )));
-                    }
+        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh)
+        {
+            for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler * qualityOfMesh)
+            {
+                float z = (x * x + y * y);
+                vectorList.Add(new Vector3(x + bSlider.value, (1 / aSlider.value) * z + dSlider.value, y + cSlider.value));
+                Vector3 tangentX = new Vector3(0.0f, (y * 2), 1.0f);
+                Vector3 tangentY = new Vector3(1.0f, (x * 2), 0.0f);
+                Vector3 normal = -Vector3.Cross(tangentX, tangentY);
+                normalsList.Add(normal);
+            }
+        }
 
         for (float x = -4; x < 4; x = x + qualityOfMesh)
         {
@@ -80,15 +85,19 @@ public class MeshGenerator : MonoBehaviour {
         }
         i = i + columnSize;
         for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh)
+        {
             for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler * qualityOfMesh)
-
-            //adding vertex and shaders for bottom of curve (which ends up being the top for the player)
             {
-                    float z = (x * x + y * y);
+                //adding vertex and normals for bottom of curve (which ends up being the top for the player)
+                float z = (x * x + y * y);
                 vectorList.Add(new Vector3(x + bSlider.value, (1 / aSlider.value) * z + dSlider.value, y + cSlider.value));
-                normalsList.Add(Vector3.Cross(new Vector3(1.0f, (x * 2), 0.0f), new Vector3(0.0f, (y * 2), 1.0f)));
-                }
-
+                Vector3 tangentX = new Vector3(0.0f, (y * 2), 1.0f);
+                Vector3 tangentY = new Vector3(1.0f, (x * 2), 0.0f);
+                Vector3 normal = Vector3.Cross(tangentX, tangentY);
+                normalsList.Add(normal);
+                //normalsList.Add(Vector3.Cross(new Vector3(1.0f, (x * 2), 0.0f), new Vector3(0.0f, (y * 2), 1.0f)));
+            }
+        }
 
         for (float x = -4; x < 4; x = x + qualityOfMesh)
         {
