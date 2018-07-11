@@ -217,7 +217,6 @@ public class LevelManager : MonoBehaviour {
             else
                 sliderValues[j] = sliders[j].value;
         }
-        Debug.Log(sliderValues[0] + " " + sliderValues[1] + " " + sliderValues[2] + " " + sliderValues[3] + " ");
 
         //adding vertex and shaders for top of curve(which ends up being the bottom for the player)
         for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh)
@@ -235,10 +234,9 @@ public class LevelManager : MonoBehaviour {
                 zUnityLocation = y - sliderValues[2];
 
                 vectorList.Add(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation));
-                Vector3 tangentX = new Vector3(0.0f, (2*y), 1.0f);
-                Vector3 tangentY = new Vector3(1.0f, (2*x), 0.0f);
+                Vector3 tangentY = new Vector3(0.0f, (2 * sliderValues[0] * (y - sliderValues[2])), 1.0f * sliderValues[0]);
+                Vector3 tangentX = new Vector3(1.0f * sliderValues[0], (2 * sliderValues[0] * (x - sliderValues[1])), 0.0f);
                 Vector3 normal = Vector3.Cross(tangentY, tangentX);
-                //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.black, 5);
                 normalsList.Add(normal);
             }
         }
@@ -284,10 +282,9 @@ public class LevelManager : MonoBehaviour {
                 zUnityLocation = y - sliderValues[2];
 
                 vectorList.Add(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation));
-                Vector3 tangentX = new Vector3(0.0f, (2*y), 1.0f);
-                Vector3 tangentY = new Vector3(1.0f, (2*x), 0.0f);
-                Vector3 normal = Vector3.Cross(tangentX, tangentY);
-                //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.red, 5);
+                Vector3 tangentY = new Vector3(0.0f, (2 * sliderValues[0] * (y - sliderValues[2])), 1.0f * sliderValues[0]);
+                Vector3 tangentX = new Vector3(1.0f * sliderValues[0], (2 * sliderValues[0] * (x - sliderValues[1])), 0.0f);
+                Vector3 normal = -Vector3.Cross(tangentY, tangentX);
                 normalsList.Add(normal);
             }
         }
