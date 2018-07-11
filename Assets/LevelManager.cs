@@ -29,15 +29,15 @@ public class LevelManager : MonoBehaviour {
     float levelTimeLimit;
     float timer;
     string[] equation;
-    int equationLength;
-    float[][] sliderMaps;
+    int equationLength; //this determines how many sliders are used.  each time the equation is broken up, a slider is inserted to fill the gap
+    float[][] sliderMaps; //maps slider integars into values the equation can hold, such as (0,1,2,3) to (-1,-.5,-.33,-.2)
+    float[] sliderValues; //takes the value from the sliderMap if there is one, or from the slider if there isn't one
     // Use this for initialization
     void Start () {
         LoadLevel(1);
-        updateMesh();
     }
 
-    public void updateMesh()
+    public void UpdateMesh()
     {
         filter.mesh = GenerateMesh();
     }
@@ -53,7 +53,6 @@ public class LevelManager : MonoBehaviour {
             {
                 if (CheckWin(currentLevel))
                 {
-                    Debug.Log("Win!");
                     for (int i = 0; i < numberSpheres; i++)
                     {
                         Destroy(SphereList[i]);
@@ -117,9 +116,10 @@ public class LevelManager : MonoBehaviour {
                     equation[1] = "*((X-";
                     equation[2] = ")²+(Y-";
                     equation[3] = ")²)+";
-                    UpdateEquation();
                     timer = levelTimeLimit;
                     timerDisplay.text = "Level Time: " + timer.ToString();
+                    UpdateMesh();
+                    UpdateEquation();
                 }
                 break;
                 case 2:
@@ -137,14 +137,16 @@ public class LevelManager : MonoBehaviour {
                     }
                     currentLevel = 2;
                     levelTimeLimit = 3;
-                    UpdateEquation();
                     timer = levelTimeLimit;
                     timerDisplay.text = "Level Time: " + timer.ToString();
+                    UpdateMesh();
+                    UpdateEquation();
                 }
                 break;
             default:
                 break;
         }
+
     }
 
     public void StartLevel()
@@ -162,9 +164,9 @@ public class LevelManager : MonoBehaviour {
         if (currentLevel==1)
         {
             if (sliders[1].value < 0 )
-                equation[1] = ")*((X";
+                equation[1] = "*((X";
             else
-                equation[1] = ")*((X+";
+                equation[1] = "*((X+";
 
             if (sliders[2].value < 0 )
                 equation[2] = ")²+(Y";
@@ -174,17 +176,8 @@ public class LevelManager : MonoBehaviour {
         equationDisplay.text = "";
         for (int i = 0; i<equationLength; i++)
         {
-            float value;
-            if (sliderMaps[i] != null)
-            {
-                value = sliderMaps[i][(int)sliders[i].value];
-                                
-            }
-            else
-            {
-                value = sliders[i].value;
-            }
-            value = Mathf.Round(value * 100f) / 100f;
+            float value = sliderValues[i];
+            value = Mathf.Round(value * 100f) / 100f; //round this to 3 decimal places
             equationDisplay.text = equationDisplay.text + equation[i] + value.ToString();
         }
     }
@@ -214,7 +207,17 @@ public class LevelManager : MonoBehaviour {
         List<Vector3> normalsList = new List<Vector3>();
         List<int> trianglesList = new List<int>();
         int columnSize = (int)(8 / qualityOfMesh) + 1;
-        int i = 0;
+        int i = 0; //carries on through generation of both sides of mesh, do not use for local counter variable
+        sliderValues = new float[equationLength];
+
+        for (int j = 0; j<equationLength; j++) //get slider values from the map if it exists, or directly from the slider if no map exists
+        {
+            if (sliderMaps != null && sliderMaps[j] != null)
+                sliderValues[j] = sliderMaps[j][(int)sliders[j].value];
+            else
+                sliderValues[j] = sliders[j].value;
+        }
+        Debug.Log(sliderValues[0] + " " + sliderValues[1] + " " + sliderValues[2] + " " + sliderValues[3] + " ");
 
         //adding vertex and shaders for top of curve(which ends up being the bottom for the player)
         for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh)
@@ -222,35 +225,20 @@ public class LevelManager : MonoBehaviour {
             for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler * qualityOfMesh)
             {
                 float z = (x * x + y * y);
-                float xUnityLocation; //since I forced Z to be up, these section will translate to the unity values
+                float xUnityLocation; //since I forced Z to be up, these section will translate from the equation to the unity values
                 float yUnityLocation;
                 float zUnityLocation;
 
-                if (sliderMaps != null && sliderMaps[1] != null)
-                    xUnityLocation = x + sliderMaps[1][(int)sliders[1].value];
-                else
-                    xUnityLocation = x + sliders[1].value;
-
-                if (sliderMaps != null && sliderMaps[0] != null)  //first calculates the 1/a value at the start of the whole equation
-                    yUnityLocation = sliderMaps[0][(int)sliders[0].value] * z;
-                else
-                    yUnityLocation = sliders[0].value * z;
-
-                if (sliderMaps != null && sliderMaps[3] != null) //then adds d to it to incorporate the last of the equation
-                    yUnityLocation = yUnityLocation + sliderMaps[3][(int)sliders[3].value];
-                else
-                    yUnityLocation = yUnityLocation + sliders[3].value;
-
-                if (sliderMaps != null && sliderMaps[2] != null)
-                    zUnityLocation = y + sliderMaps[2][(int)sliders[2].value];
-                else
-                    zUnityLocation = y + sliders[2].value;
-
+                xUnityLocation = x - sliderValues[1];
+                yUnityLocation = sliderValues[0] * z;//first calculates the 1/a value at the start of the whole equation
+                yUnityLocation = yUnityLocation + sliderValues[3]; //then adds d to it to incorporate the last of the equation
+                zUnityLocation = y - sliderValues[2];
 
                 vectorList.Add(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation));
-                Vector3 tangentX = new Vector3(0.0f, (y * 2), 1.0f);
-                Vector3 tangentY = new Vector3(1.0f, (x * 2), 0.0f);
-                Vector3 normal = -Vector3.Cross(tangentX, tangentY);
+                Vector3 tangentX = new Vector3(0.0f, (2*y), 1.0f);
+                Vector3 tangentY = new Vector3(1.0f, (2*x), 0.0f);
+                Vector3 normal = Vector3.Cross(tangentY, tangentX);
+                //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.black, 5);
                 normalsList.Add(normal);
             }
         }
@@ -290,33 +278,17 @@ public class LevelManager : MonoBehaviour {
                 float yUnityLocation;
                 float zUnityLocation;
 
-                if (sliderMaps != null && sliderMaps[1] != null)
-                    xUnityLocation = x + sliderMaps[1][(int)sliders[1].value];
-                else
-                    xUnityLocation = x + sliders[1].value;
-
-                if (sliderMaps != null && sliderMaps[0] != null)  //first calculates the 1/a value at the start of the whole equation
-                    yUnityLocation = sliderMaps[0][(int)sliders[0].value] * z;
-                else
-                    yUnityLocation = sliders[0].value * z;
-
-                if (sliderMaps != null && sliderMaps[3] != null) //then adds d to it to incorporate the last of the equation
-                    yUnityLocation = yUnityLocation + sliderMaps[3][(int)sliders[3].value];
-                else
-                    yUnityLocation = yUnityLocation + sliders[3].value;
-
-                if (sliderMaps != null && sliderMaps[2] != null)
-                    zUnityLocation = y + sliderMaps[2][(int)sliders[2].value];
-                else
-                    zUnityLocation = y + sliders[2].value;
-
+                xUnityLocation = x - sliderValues[1];
+                yUnityLocation = sliderValues[0] * z;//first calculates the 1/a value at the start of the whole equation
+                yUnityLocation = yUnityLocation + sliderValues[3]; //then adds d to it to incorporate the last of the equation
+                zUnityLocation = y - sliderValues[2];
 
                 vectorList.Add(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation));
-                Vector3 tangentX = new Vector3(0.0f, (y * 2), 1.0f);
-                Vector3 tangentY = new Vector3(1.0f, (x * 2), 0.0f);
+                Vector3 tangentX = new Vector3(0.0f, (2*y), 1.0f);
+                Vector3 tangentY = new Vector3(1.0f, (2*x), 0.0f);
                 Vector3 normal = Vector3.Cross(tangentX, tangentY);
+                //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.red, 5);
                 normalsList.Add(normal);
-                //normalsList.Add(Vector3.Cross(new Vector3(1.0f, (x * 2), 0.0f), new Vector3(0.0f, (y * 2), 1.0f)));
             }
         }
 
