@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelManager : MonoBehaviour {
+public class LevelManager : MonoBehaviour
+{
     [SerializeField]
     MeshFilter filter;
     [SerializeField]
@@ -24,6 +25,7 @@ public class LevelManager : MonoBehaviour {
     float qualityOfMesh; //smaller is better, increases or decreases the number of mesh points by powers of 2
     public float meshScaler = 1f;
     int numberSpheres;
+    GameObject[] sphereLines;
     bool timerOn;
     int currentLevel;
     float levelTimeLimit;
@@ -33,7 +35,8 @@ public class LevelManager : MonoBehaviour {
     float[][] sliderMaps; //maps slider integars into values the equation can hold, such as (0,1,2,3) to (-1,-.5,-.33,-.2)
     float[] sliderValues; //takes the value from the sliderMap if there is one, or from the slider if there isn't one
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         LoadLevel(1);
     }
 
@@ -43,12 +46,13 @@ public class LevelManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         if (timerOn)
         {
             timer -= Time.deltaTime;
 
-            timerDisplay.text = "Level Time: " + (Mathf.Round(timer*100)/100).ToString(); //couldn't find a better way of rounding to nearest 100th.
+            timerDisplay.text = "Level Time: " + (Mathf.Round(timer * 100) / 100).ToString(); //couldn't find a better way of rounding to nearest 100th.
             if (timer < 0)
             {
                 if (CheckWin(currentLevel))
@@ -65,7 +69,7 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
-    public void ResetBalls ()
+    public void ResetBalls()
     {
         for (int i = 0; i < numberSpheres; i++)
         {
@@ -77,6 +81,12 @@ public class LevelManager : MonoBehaviour {
         timerOn = false;
         timer = levelTimeLimit;
         timerDisplay.text = "Level Time: " + timer.ToString();
+
+        for (int sphere = 0; sphere < numberSpheres; sphere++) //redraw lines
+        {
+            var sphereLineEnd = new Vector3(SphereLocations[sphere].x, 0, SphereLocations[sphere].z);
+            sphereLines[sphere] = DrawLine(SphereLocations[sphere], sphereLineEnd);
+        }
     }
 
     public void LoadLevel(int levelNumber)
@@ -84,7 +94,7 @@ public class LevelManager : MonoBehaviour {
         timerOn = false;
         switch (levelNumber)
         {
-               case 1:
+            case 1:
                 {
                     numberSpheres = 4;
                     SphereLocations = new Vector3[numberSpheres];
@@ -93,21 +103,19 @@ public class LevelManager : MonoBehaviour {
                     SphereLocations[1] = new Vector3(2, 15, 4);
                     SphereLocations[2] = new Vector3(3, 15, 5);
                     SphereLocations[3] = new Vector3(0, 15, 2);
-                    for (int sphere = 0; sphere < 4; sphere++)
-                    {
-                        SphereList[sphere] = Instantiate(SphereInstance, SphereLocations[sphere], Quaternion.identity);
-                    }
+                    sphereLines = new GameObject[numberSpheres];
+                    DrawBalls();
                     currentLevel = 1;
                     levelTimeLimit = 3;
                     equationLength = 4;
                     SliderLocations = new Vector3[equationLength];
                     sliderMaps = new float[equationLength][];
                     SliderLocations[0] = new Vector3(-176, 130, 0);
-                    sliderMaps[0] = new float[10] { -1, -1/2f, -1/3f, -1/4f, -1/5f, 1/5f, 1/4f, 1/3f, 1/2f, 1 };
+                    sliderMaps[0] = new float[10] { -1, -1 / 2f, -1 / 3f, -1 / 4f, -1 / 5f, 1 / 5f, 1 / 4f, 1 / 3f, 1 / 2f, 1 };
                     SliderLocations[1] = new Vector3(-19, 106, 0);
                     SliderLocations[2] = new Vector3(111, 130, 0);
                     SliderLocations[3] = new Vector3(219, 106, 0);
-                    for (int i = 0; i<equationLength; i++)
+                    for (int i = 0; i < equationLength; i++)
                     {
                         sliders[i].transform.localPosition = SliderLocations[i];
                     }
@@ -122,7 +130,7 @@ public class LevelManager : MonoBehaviour {
                     UpdateEquation();
                 }
                 break;
-                case 2:
+            case 2:
                 {
                     numberSpheres = 4;
                     SphereLocations = new Vector3[4];
@@ -131,10 +139,7 @@ public class LevelManager : MonoBehaviour {
                     SphereLocations[1] = new Vector3(2, 10, 1);
                     SphereLocations[2] = new Vector3(3, 10, 8);
                     SphereLocations[3] = new Vector3(0, 10, 4);
-                    for (int sphere = 0; sphere < 4; sphere++)
-                    {
-                        SphereList[sphere] = Instantiate(SphereInstance, SphereLocations[sphere], Quaternion.identity);
-                    }
+                    DrawBalls();
                     currentLevel = 2;
                     levelTimeLimit = 3;
                     timer = levelTimeLimit;
@@ -151,30 +156,31 @@ public class LevelManager : MonoBehaviour {
 
     public void StartLevel()
     {
-        for (int i = 0; i< numberSpheres;i++)
+        for (int i = 0; i < numberSpheres; i++)
         {
             SphereList[i].GetComponent<Rigidbody>().useGravity = true;
             SphereList[i].GetComponent<Rigidbody>().isKinematic = false;
             timerOn = true;
+            Destroy(sphereLines[i]);
         }
     }
 
     public void UpdateEquation()
     {
-        if (currentLevel==1)
+        if (currentLevel == 1)
         {
-            if (sliders[1].value < 0 )
+            if (sliders[1].value < 0)
                 equation[1] = "*((X";
             else
                 equation[1] = "*((X+";
 
-            if (sliders[2].value < 0 )
+            if (sliders[2].value < 0)
                 equation[2] = ")²+(Y";
             else
                 equation[2] = ")²+(Y+";
         }
         equationDisplay.text = "";
-        for (int i = 0; i<equationLength; i++)
+        for (int i = 0; i < equationLength; i++)
         {
             float value = sliderValues[i];
             value = Mathf.Round(value * 100f) / 100f; //round this to 3 decimal places
@@ -188,7 +194,7 @@ public class LevelManager : MonoBehaviour {
         switch (levelNumber)
         {
             case 1:
-                {                 
+                {
                     for (int i = 0; i < numberSpheres; i++)
                         if (SphereList[i].transform.position.y < -10)
                             winning = false;
@@ -210,7 +216,7 @@ public class LevelManager : MonoBehaviour {
         int i = 0; //carries on through generation of both sides of mesh, do not use for local counter variable
         sliderValues = new float[equationLength];
 
-        for (int j = 0; j<equationLength; j++) //get slider values from the map if it exists, or directly from the slider if no map exists
+        for (int j = 0; j < equationLength; j++) //get slider values from the map if it exists, or directly from the slider if no map exists
         {
             if (sliderMaps != null && sliderMaps[j] != null)
                 sliderValues[j] = sliderMaps[j][(int)sliders[j].value];
@@ -236,8 +242,13 @@ public class LevelManager : MonoBehaviour {
                 vectorList.Add(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation));
                 Vector3 tangentY = new Vector3(0.0f, (2 * sliderValues[0] * (y - sliderValues[2])), 1.0f * sliderValues[0]);
                 Vector3 tangentX = new Vector3(1.0f * sliderValues[0], (2 * sliderValues[0] * (x - sliderValues[1])), 0.0f);
-                Vector3 normal = Vector3.Cross(tangentY, tangentX);
+                Vector3 normal;
+                if (sliderValues[0] > 0)
+                    normal = Vector3.Cross(tangentY, tangentX);
+                else
+                    normal = -Vector3.Cross(tangentY, tangentX);
                 normalsList.Add(normal);
+                //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.black, 2); draws a debug ray for the top normal
             }
         }
 
@@ -284,8 +295,15 @@ public class LevelManager : MonoBehaviour {
                 vectorList.Add(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation));
                 Vector3 tangentY = new Vector3(0.0f, (2 * sliderValues[0] * (y - sliderValues[2])), 1.0f * sliderValues[0]);
                 Vector3 tangentX = new Vector3(1.0f * sliderValues[0], (2 * sliderValues[0] * (x - sliderValues[1])), 0.0f);
-                Vector3 normal = -Vector3.Cross(tangentY, tangentX);
+                Vector3 normal;
+                if (sliderValues[0] > 0)
+                {
+                    normal = -Vector3.Cross(tangentY, tangentX);
+                }
+                else
+                    normal = Vector3.Cross(tangentY, tangentX);
                 normalsList.Add(normal);
+                //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.red, 2); draws a debug ray for the bottom normal
             }
         }
 
@@ -321,4 +339,31 @@ public class LevelManager : MonoBehaviour {
 
         return mesh;
     }
+
+
+    GameObject DrawLine(Vector3 start, Vector3 end)
+    {
+        GameObject myLine = new GameObject();
+        myLine.transform.position = start;
+        myLine.AddComponent<LineRenderer>();
+        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        //lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+        lr.startColor = Color.red;
+        lr.startWidth = 0.1f;
+        lr.SetPosition(0, start);
+        lr.SetPosition(1, end);
+        return myLine;
+        //GameObject.Destroy(myLine);
+    }
+
+    void DrawBalls()
+    {
+        for (int sphere = 0; sphere < numberSpheres; sphere++)
+        {
+            SphereList[sphere] = Instantiate(SphereInstance, SphereLocations[sphere], Quaternion.identity);
+            var sphereLineEnd = new Vector3(SphereLocations[sphere].x, 0, SphereLocations[sphere].z);
+            sphereLines[sphere] = DrawLine(SphereLocations[sphere], sphereLineEnd);
+        }
+    }
 }
+
