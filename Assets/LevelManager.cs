@@ -167,7 +167,7 @@ public class LevelManager : MonoBehaviour
 
     public void UpdateEquation()
     {
-        if (currentLevel == 1)
+        if (currentLevel < 3)
         {
             if (sliders[1].value < 0)
                 equation[1] = "*((X";
@@ -212,6 +212,7 @@ public class LevelManager : MonoBehaviour
         List<Vector3> vectorList = new List<Vector3>();
         List<Vector3> normalsList = new List<Vector3>();
         List<int> trianglesList = new List<int>();
+        List<Vector2> uvList = new List<Vector2>();
         int columnSize = (int)(8 / qualityOfMesh) + 1;
         int i = 0; //carries on through generation of both sides of mesh, do not use for local counter variable
         sliderValues = new float[equationLength];
@@ -225,7 +226,7 @@ public class LevelManager : MonoBehaviour
         }
 
         //adding vertex and shaders for top of curve(which ends up being the bottom for the player)
-        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh)
+        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh) //set mesh vertices, normals, and uvs for top of curve
         {
             for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler * qualityOfMesh)
             {
@@ -248,11 +249,12 @@ public class LevelManager : MonoBehaviour
                 else
                     normal = -Vector3.Cross(tangentY, tangentX);
                 normalsList.Add(normal);
+                uvList.Add(new Vector2(x, y));
                 //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.black, 2); draws a debug ray for the top normal
             }
         }
 
-        for (float x = -4; x < 4; x = x + qualityOfMesh)
+        for (float x = -4; x < 4; x = x + qualityOfMesh) //draw top side triangles 
         {
             for (float y = -4; y < 4; y = y + qualityOfMesh)
             {
@@ -271,13 +273,13 @@ public class LevelManager : MonoBehaviour
                 //trianglesList.Add(i + 1);
                 //trianglesList.Add(i);
                 //trianglesList.Add(i + 1 + columnSize);
-
+                
                 i++;
             }
             i++; //skip the top x value that won't have it's triangle drawn
         }
         i = i + columnSize;
-        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh)
+        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh) //set mesh vertices, normals, and uvs for top of curve
         {
             for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler * qualityOfMesh)
             {
@@ -303,11 +305,13 @@ public class LevelManager : MonoBehaviour
                 else
                     normal = Vector3.Cross(tangentY, tangentX);
                 normalsList.Add(normal);
+
+                uvList.Add(new Vector2(x, y));
                 //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.red, 2); draws a debug ray for the bottom normal
             }
         }
 
-        for (float x = -4; x < 4; x = x + qualityOfMesh)
+        for (float x = -4; x < 4; x = x + qualityOfMesh) //draw bottom side triangles
         {
             for (float y = -4; y < 4; y = y + qualityOfMesh)
             {
@@ -335,6 +339,7 @@ public class LevelManager : MonoBehaviour
         mesh.SetVertices(vectorList);
         mesh.SetNormals(normalsList);
         mesh.SetTriangles(trianglesList, 0);
+        mesh.SetUVs(0, uvList);
         meshCollider.sharedMesh = mesh;
 
         return mesh;
