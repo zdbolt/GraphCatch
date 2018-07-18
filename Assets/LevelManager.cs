@@ -106,7 +106,7 @@ public class LevelManager : MonoBehaviour
                     sphereLines = new GameObject[numberSpheres];
                     DrawBalls();
                     currentLevel = 1;
-                    levelTimeLimit = 3;
+                    levelTimeLimit = 6;
                     equationLength = 4;
                     SliderLocations = new Vector3[equationLength];
                     sliderMaps = new float[equationLength][];
@@ -141,7 +141,7 @@ public class LevelManager : MonoBehaviour
                     SphereLocations[3] = new Vector3(0, 10, 4);
                     DrawBalls();
                     currentLevel = 2;
-                    levelTimeLimit = 3;
+                    levelTimeLimit = 6;
                     timer = levelTimeLimit;
                     timerDisplay.text = "Level Time: " + timer.ToString();
                     UpdateMesh();
@@ -178,6 +178,11 @@ public class LevelManager : MonoBehaviour
                 equation[2] = ")²+(Y";
             else
                 equation[2] = ")²+(Y+";
+
+            if (sliders[3].value < 0)
+                equation[3] = ")²)";
+            else
+                equation[3] = ")²)+";
         }
         equationDisplay.text = "";
         for (int i = 0; i < equationLength; i++)
