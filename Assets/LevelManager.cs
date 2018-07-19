@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class LevelManager : MonoBehaviour
 {
     [SerializeField]
+    GameObject canvasObject;
+    [SerializeField]
     MeshFilter filter;
     [SerializeField]
     MeshCollider meshCollider;
@@ -67,6 +69,8 @@ public class LevelManager : MonoBehaviour
                     ResetBalls();
             }
         }
+        canvasObject.transform.LookAt(Camera.main.transform);
+        canvasObject.transform.rotation = Quaternion.Euler(0, canvasObject.transform.eulerAngles.y+180, canvasObject.transform.eulerAngles.z);
     }
 
     public void ResetBalls()
@@ -96,7 +100,7 @@ public class LevelManager : MonoBehaviour
         {
             case 1:
                 {
-                    numberSpheres = 4;
+                    numberSpheres = 4; //this could all be xml
                     SphereLocations = new Vector3[numberSpheres];
                     SphereList = new GameObject[numberSpheres];
                     SphereLocations[0] = new Vector3(1.01f, 15, 3.01f);

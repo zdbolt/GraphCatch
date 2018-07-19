@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 8
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -39,7 +39,6 @@ RenderSettings:
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
-  m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -55,10 +54,11 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
-    serializedVersion: 10
+    serializedVersion: 9
     m_Resolution: 2
     m_BakeResolution: 10
-    m_AtlasSize: 512
+    m_TextureWidth: 1024
+    m_TextureHeight: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -157,6 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a520c72843a3e0b49a0bbaf48680fadc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasObject: {fileID: 1983629968}
   filter: {fileID: 37738660}
   meshCollider: {fileID: 37738659}
   qualitySlider: {fileID: 268369410}
@@ -183,7 +184,6 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: ed94d1c1a8181e74995b09c9aef888b5, type: 2}
   m_StaticBatchInfo:
@@ -935,7 +935,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 282840810}
-  m_LocalRotation: {x: 0.150469, y: -0.011827301, z: 0.0020702193, w: 0.9885418}
+  m_LocalRotation: {x: 0.15046902, y: -0.011827302, z: 0.0020702195, w: 0.98854184}
   m_LocalPosition: {x: 0.57, y: 10.43, z: -23.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -2813,7 +2813,7 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1983629968}
-  m_LocalRotation: {x: 0.150469, y: -0.011827301, z: 0.0020702193, w: 0.9885418}
+  m_LocalRotation: {x: 0.15046902, y: -0.011827302, z: 0.0020702195, w: 0.98854184}
   m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 0.09, y: 0.09, z: 0.09}
   m_Children:
@@ -2876,7 +2876,6 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: b099f2e89b6c8d04ba41033d479fd1cc, type: 2}
   m_StaticBatchInfo:
