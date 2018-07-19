@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CanvasManager : MonoBehaviour {
-    [SerializeField]
-    Vector3 test;
-	// Use this for initialization
+    // Use this for initialization
 	void Start () {
 		
 	}
