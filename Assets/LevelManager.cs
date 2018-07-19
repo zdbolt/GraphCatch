@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class LevelManager : MonoBehaviour
 {
     [SerializeField]
+    GameObject canvasObject;
+    [SerializeField]
     MeshFilter filter;
     [SerializeField]
     MeshCollider meshCollider;
@@ -67,6 +69,8 @@ public class LevelManager : MonoBehaviour
                     ResetBalls();
             }
         }
+        canvasObject.transform.LookAt(Camera.main.transform);
+        canvasObject.transform.rotation = Quaternion.Euler(0, canvasObject.transform.eulerAngles.y+180, canvasObject.transform.eulerAngles.z);
     }
 
     public void ResetBalls()
@@ -96,17 +100,17 @@ public class LevelManager : MonoBehaviour
         {
             case 1:
                 {
-                    numberSpheres = 4;
+                    numberSpheres = 4; //this could all be xml
                     SphereLocations = new Vector3[numberSpheres];
                     SphereList = new GameObject[numberSpheres];
-                    SphereLocations[0] = new Vector3(1, 15, 3);
-                    SphereLocations[1] = new Vector3(2, 15, 4);
-                    SphereLocations[2] = new Vector3(3, 15, 5);
-                    SphereLocations[3] = new Vector3(0, 15, 2);
+                    SphereLocations[0] = new Vector3(1.01f, 15, 3.01f);
+                    SphereLocations[1] = new Vector3(2.01f, 15, 4.01f);
+                    SphereLocations[2] = new Vector3(3.01f, 15, 5.01f);
+                    SphereLocations[3] = new Vector3(0.01f, 15, 2.01f);
                     sphereLines = new GameObject[numberSpheres];
                     DrawBalls();
                     currentLevel = 1;
-                    levelTimeLimit = 3;
+                    levelTimeLimit = 6;
                     equationLength = 4;
                     SliderLocations = new Vector3[equationLength];
                     sliderMaps = new float[equationLength][];
@@ -135,13 +139,13 @@ public class LevelManager : MonoBehaviour
                     numberSpheres = 4;
                     SphereLocations = new Vector3[4];
                     SphereList = new GameObject[4];
-                    SphereLocations[0] = new Vector3(1, 10, 7);
-                    SphereLocations[1] = new Vector3(2, 10, 1);
-                    SphereLocations[2] = new Vector3(3, 10, 8);
-                    SphereLocations[3] = new Vector3(0, 10, 4);
+                    SphereLocations[0] = new Vector3(1.01f, 10, 7.01f);
+                    SphereLocations[1] = new Vector3(2.01f, 10, 1.01f);
+                    SphereLocations[2] = new Vector3(3.01f, 10, 8.01f);
+                    SphereLocations[3] = new Vector3(0.01f, 10, 4.01f);
                     DrawBalls();
                     currentLevel = 2;
-                    levelTimeLimit = 3;
+                    levelTimeLimit = 6;
                     timer = levelTimeLimit;
                     timerDisplay.text = "Level Time: " + timer.ToString();
                     UpdateMesh();
@@ -167,7 +171,7 @@ public class LevelManager : MonoBehaviour
 
     public void UpdateEquation()
     {
-        if (currentLevel == 1)
+        if (currentLevel < 3)
         {
             if (sliders[1].value < 0)
                 equation[1] = "*((X";
@@ -178,6 +182,11 @@ public class LevelManager : MonoBehaviour
                 equation[2] = ")²+(Y";
             else
                 equation[2] = ")²+(Y+";
+
+            if (sliders[3].value < 0)
+                equation[3] = ")²)";
+            else
+                equation[3] = ")²)+";
         }
         equationDisplay.text = "";
         for (int i = 0; i < equationLength; i++)
@@ -212,6 +221,7 @@ public class LevelManager : MonoBehaviour
         List<Vector3> vectorList = new List<Vector3>();
         List<Vector3> normalsList = new List<Vector3>();
         List<int> trianglesList = new List<int>();
+        List<Vector2> uvList = new List<Vector2>();
         int columnSize = (int)(8 / qualityOfMesh) + 1;
         int i = 0; //carries on through generation of both sides of mesh, do not use for local counter variable
         sliderValues = new float[equationLength];
@@ -225,7 +235,7 @@ public class LevelManager : MonoBehaviour
         }
 
         //adding vertex and shaders for top of curve(which ends up being the bottom for the player)
-        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh)
+        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh) //set mesh vertices, normals, and uvs for top of curve
         {
             for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler * qualityOfMesh)
             {
@@ -248,11 +258,12 @@ public class LevelManager : MonoBehaviour
                 else
                     normal = -Vector3.Cross(tangentY, tangentX);
                 normalsList.Add(normal);
+                uvList.Add(new Vector2(x, y));
                 //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.black, 2); draws a debug ray for the top normal
             }
         }
 
-        for (float x = -4; x < 4; x = x + qualityOfMesh)
+        for (float x = -4; x < 4; x = x + qualityOfMesh) //draw top side triangles 
         {
             for (float y = -4; y < 4; y = y + qualityOfMesh)
             {
@@ -271,13 +282,13 @@ public class LevelManager : MonoBehaviour
                 //trianglesList.Add(i + 1);
                 //trianglesList.Add(i);
                 //trianglesList.Add(i + 1 + columnSize);
-
+                
                 i++;
             }
             i++; //skip the top x value that won't have it's triangle drawn
         }
         i = i + columnSize;
-        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh)
+        for (float x = meshScaler * -4; x <= meshScaler * 4; x = x + meshScaler * qualityOfMesh) //set mesh vertices, normals, and uvs for top of curve
         {
             for (float y = meshScaler * -4; y <= meshScaler * 4; y = y + meshScaler * qualityOfMesh)
             {
@@ -303,11 +314,13 @@ public class LevelManager : MonoBehaviour
                 else
                     normal = Vector3.Cross(tangentY, tangentX);
                 normalsList.Add(normal);
+
+                uvList.Add(new Vector2(x, y));
                 //Debug.DrawRay(new Vector3(xUnityLocation, yUnityLocation, zUnityLocation), normal, Color.red, 2); draws a debug ray for the bottom normal
             }
         }
 
-        for (float x = -4; x < 4; x = x + qualityOfMesh)
+        for (float x = -4; x < 4; x = x + qualityOfMesh) //draw bottom side triangles
         {
             for (float y = -4; y < 4; y = y + qualityOfMesh)
             {
@@ -335,6 +348,7 @@ public class LevelManager : MonoBehaviour
         mesh.SetVertices(vectorList);
         mesh.SetNormals(normalsList);
         mesh.SetTriangles(trianglesList, 0);
+        mesh.SetUVs(0, uvList);
         meshCollider.sharedMesh = mesh;
 
         return mesh;
