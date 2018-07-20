@@ -70,7 +70,7 @@ public class LevelManager : MonoBehaviour
             }
         }
         canvasObject.transform.LookAt(Camera.main.transform);
-        canvasObject.transform.rotation = Quaternion.Euler(0, canvasObject.transform.eulerAngles.y+180, canvasObject.transform.eulerAngles.z);
+        canvasObject.transform.rotation = Quaternion.Euler(0, canvasObject.transform.eulerAngles.y+180, 0);
     }
 
     public void ResetBalls()
