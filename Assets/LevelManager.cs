@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class LevelManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject canvasObject;
+    GameObject equationCanvas;
+    [SerializeField]
+    GameObject settingsCanvas;
     [SerializeField]
     MeshFilter filter;
     [SerializeField]
@@ -69,8 +71,11 @@ public class LevelManager : MonoBehaviour
                     ResetBalls();
             }
         }
-        canvasObject.transform.LookAt(Camera.main.transform);
-        canvasObject.transform.rotation = Quaternion.Euler(0, canvasObject.transform.eulerAngles.y+180, 0);
+       equationCanvas.transform.LookAt(Camera.main.transform);
+       equationCanvas.transform.rotation = Quaternion.Euler(0, equationCanvas.transform.eulerAngles.y+180, 0);
+
+       settingsCanvas.transform.LookAt(Camera.main.transform);
+       settingsCanvas.transform.rotation = Quaternion.Euler(0, settingsCanvas.transform.eulerAngles.y + 180, 0);
     }
 
     public void ResetBalls()
@@ -103,9 +108,9 @@ public class LevelManager : MonoBehaviour
                     numberSpheres = 4; //this could all be xml
                     SphereLocations = new Vector3[numberSpheres];
                     SphereList = new GameObject[numberSpheres];
-                    SphereLocations[0] = new Vector3(1.01f, 15, 3.01f);
-                    SphereLocations[1] = new Vector3(2.01f, 15, 4.01f);
-                    SphereLocations[2] = new Vector3(3.01f, 15, 5.01f);
+                    SphereLocations[0] = new Vector3(1.01f, 15, 2.99f);
+                    SphereLocations[1] = new Vector3(2.01f, 15, 3.99f);
+                    SphereLocations[2] = new Vector3(2.99f, 15, 4.99f);
                     SphereLocations[3] = new Vector3(0.01f, 15, 2.01f);
                     sphereLines = new GameObject[numberSpheres];
                     DrawBalls();
@@ -139,9 +144,9 @@ public class LevelManager : MonoBehaviour
                     numberSpheres = 4;
                     SphereLocations = new Vector3[4];
                     SphereList = new GameObject[4];
-                    SphereLocations[0] = new Vector3(1.01f, 10, 7.01f);
+                    SphereLocations[0] = new Vector3(1.01f, 10, 6.991f);
                     SphereLocations[1] = new Vector3(2.01f, 10, 1.01f);
-                    SphereLocations[2] = new Vector3(3.01f, 10, 8.01f);
+                    SphereLocations[2] = new Vector3(2.99f, 10, 7.99f);
                     SphereLocations[3] = new Vector3(0.01f, 10, 4.01f);
                     DrawBalls();
                     currentLevel = 2;
