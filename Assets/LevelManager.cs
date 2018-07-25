@@ -71,11 +71,16 @@ public class LevelManager : MonoBehaviour
                     ResetBalls();
             }
         }
-       equationCanvas.transform.LookAt(Camera.main.transform);
-       equationCanvas.transform.rotation = Quaternion.Euler(0, equationCanvas.transform.eulerAngles.y+180, 0);
-
-       settingsCanvas.transform.LookAt(Camera.main.transform);
-       settingsCanvas.transform.rotation = Quaternion.Euler(0, settingsCanvas.transform.eulerAngles.y + 180, 0);
+        if (equationCanvas.transform.rotation.y - Camera.main.transform.rotation.y > 1) //doesn't work yet, supposed to only turn if it's off by more than 1 degree
+        {
+            equationCanvas.transform.LookAt(Camera.main.transform);
+            equationCanvas.transform.rotation = Quaternion.Euler(0, equationCanvas.transform.eulerAngles.y + 180, 0);
+        }
+        if (settingsCanvas.transform.rotation.y - Camera.main.transform.rotation.y > 1)
+        {
+            settingsCanvas.transform.LookAt(Camera.main.transform);
+            settingsCanvas.transform.rotation = Quaternion.Euler(0, settingsCanvas.transform.eulerAngles.y + 180, 0);
+        }
     }
 
     public void ResetBalls()
