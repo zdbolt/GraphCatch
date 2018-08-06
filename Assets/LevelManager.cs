@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class LevelManager : MonoBehaviour
 {
     [SerializeField]
+    GameObject CaveInABox;
+    [SerializeField]
     GameObject equationCanvas;
     [SerializeField]
     GameObject settingsCanvas;
@@ -71,15 +73,23 @@ public class LevelManager : MonoBehaviour
                     ResetBalls();
             }
         }
-        if (equationCanvas.transform.rotation.y - Camera.main.transform.rotation.y > 1) //doesn't work yet, supposed to only turn if it's off by more than 1 degree
+        //Debug.Log(equationCanvas.transform.forward.y + " " + CaveInABox.transform.forward.y);
         {
-            equationCanvas.transform.LookAt(Camera.main.transform);
-            equationCanvas.transform.rotation = Quaternion.Euler(0, equationCanvas.transform.eulerAngles.y + 180, 0);
-        }
-        if (settingsCanvas.transform.rotation.y - Camera.main.transform.rotation.y > 1)
-        {
-            settingsCanvas.transform.LookAt(Camera.main.transform);
-            settingsCanvas.transform.rotation = Quaternion.Euler(0, settingsCanvas.transform.eulerAngles.y + 180, 0);
+            var lookAtTester = new GameObject();
+            lookAtTester.transform.LookAt(CaveInABox.transform);
+            Debug.Log(Vector3.Angle(equationCanvas.transform.forward, lookAtTester.transform.forward));
+            if (equationCanvas.transform.rotation.y + CaveInABox.transform.rotation.y > 1) //doesn't work yet, supposed to only turn if it's off by more than 1 degree
+            {
+                equationCanvas.transform.LookAt(CaveInABox.transform);
+                equationCanvas.transform.rotation = Quaternion.Euler(0, equationCanvas.transform.eulerAngles.y + 180, 0);
+            }
+            //Debug.Log(settingsCanvas.transform.rotation.y - CaveInABox.transform.rotation.y);
+            if (settingsCanvas.transform.rotation.y + CaveInABox.transform.rotation.y > 1)
+            {
+                settingsCanvas.transform.LookAt(CaveInABox.transform);
+                settingsCanvas.transform.rotation = Quaternion.Euler(0, settingsCanvas.transform.eulerAngles.y + 180, 0);
+            }
+            Destroy(lookAtTester);
         }
     }
 
